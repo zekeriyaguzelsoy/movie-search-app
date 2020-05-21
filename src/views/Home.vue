@@ -1,21 +1,43 @@
 <template>
   <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App" />
+    <input v-model="query" type="text">
+    <button @click="search">
+      Search
+    </button>
+    <h1>{{ list.lenght }}</h1>
+    <MovieList :list="list" />
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue';
+import MovieList from '../components/MovieList.vue';
 
 export default {
   name: 'Home',
   components: {
-    HelloWorld,
+    MovieList,
   },
-  mounted() {
-    console.log('process.env :>> ', process.env.VUE_APP_THMD_API_KEY);
+  data() {
+    return {
+      query: '',
+      list: [],
+    };
+  },
+  methods: {
+    search() {
+      const movieApi = `http://www.omdbapi.com/?apikey=${process.env.VUE_APP_THMD_API_KEY}&s=${this.query}`;
+
+      fetch(movieApi, { method: 'GET' })
+        .then((response) => response.json())
+        .then((response) => {
+          if (response.error) {
+            console.log('Error :>>', Error);
+          } else {
+            this.list = response.Search;
+          }
+        });
+    },
   },
 };
 </script>
